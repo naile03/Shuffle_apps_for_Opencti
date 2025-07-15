@@ -1,44 +1,23 @@
-walkoff_version: 1.0.0 # Standard bir Shuffle uygulaması için
-app_version: 1.0.0     # Uygulamanızın mevcut versiyonu
 name: wazuh_opencti_enricher
-environment: onprem    # Varsayılan ortam tipi
-description: Enrich Wazuh alerts with OpenCTI information
-author: Elshan
-tags:
-  - wazuh
-  - opencti
-  - enrichment
-  - threat-intelligence
-categories:            # Kategoriler ekleyebiliriz
-  - Security
-  - SOAR
-contact_info:          # İletişim bilgileri ekleyebiliriz
-  name: "Your Name/Organization"
-  url: "https://github.com/YourGitHubUser/your-github-repo-name"
-authentication:
-  required: true # Kimlik doğrulama gereksinimi
-  parameters:
-    - name: opencti_url
-      description: URL of the OpenCTI instance
-      example: "https://your-opencti.com" # Örnek değer
-      required: true
-      schema: # Şema tanımı
-        type: string
-    - name: opencti_token
-      description: OpenCTI API Token
-      example: "your_opencti_api_token" # Örnek değer
-      required: true
-      schema: # Şema tanımı
-        type: string
+description: Enriches Wazuh alerts with data from OpenCTI
+version: "1.0.0"
+entrypoint: app.py
+contact_info: naile@example.com
+
 actions:
-  - name: enrich_alert_with_opencti
-    description: Enriches a Wazuh alert with data from OpenCTI.
-    parameters: # input_fields yerine parameters kullanıyoruz ve schema ekliyoruz
-      - name: wazuh_alert_json
-        description: The Wazuh alert in JSON format.
+  enrich_alert_with_opencti:
+    label: Enrich Wazuh Alert with OpenCTI
+    description: Parses Wazuh alert and enriches it using OpenCTI observables
+    input:
+      - name: opencti_url
+        type: string
         required: true
-        schema: # Şema tanımı
-          type: string # JSON string olarak bekleniyor
-    returns: # Çıkış tanımı
-      schema:
-        type: json # JSON objesi olarak dönecek
+      - name: opencti_token
+        type: string
+        required: true
+      - name: wazuh_alert_json
+        type: string
+        required: true
+    output:
+      - name: enriched_observables
+        type: string
